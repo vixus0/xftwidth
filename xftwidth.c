@@ -19,7 +19,7 @@ int main(int argc, char** argv) {
   FcChar8 *str; 
 
   char *name = argv[1];
-  size_t len = strlen(argv[2]);
+  size_t len = strlen(argv[2]) + 1;
  
   str = (FcChar8*) malloc(len * sizeof(FcChar8));
 
