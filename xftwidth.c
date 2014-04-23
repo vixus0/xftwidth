@@ -19,8 +19,8 @@ int main(int argc, char** argv) {
   FcChar8 *str; 
 
   char *name = argv[1];
-  size_t len = strlen(argv[2]) + 1;
- 
+  size_t len = strlen(argv[2]);
+
   str = (FcChar8*) malloc(len * sizeof(FcChar8));
 
   strncpy((char*)str, argv[2], len);
