@@ -1,5 +1,5 @@
-CC=gcc
-CFLAGS=$(shell pkg-config --libs --cflags x11 xft fontconfig)
+CC=gcc --std=c11
+CFLAGS=`pkg-config --libs --cflags x11 freetype2 xft fontconfig`
 
 xftwidth: xftwidth.c
-	$(CC) -o $@ $< $(CFLAGS)
+	$(CC) $(CFLAGS) -o $@ $< 
