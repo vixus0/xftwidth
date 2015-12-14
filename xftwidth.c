@@ -57,13 +57,13 @@ int main(int argc, char** argv)
     return 1;
   }
 
-  XftTextExtents8(dpy, fn, str, (int)len, &ext);
+  XftTextExtentsUtf8(dpy, fn, str, (int)len, &ext);
 
   if (maxwidth > 0) {
     while (ext.width < maxwidth) {
       fontsize += sizeincr;
       fn = Load(dpy, name, fontsize);
-      XftTextExtents8(dpy, fn, str, (int)len, &ext);
+      XftTextExtentsUtf8(dpy, fn, str, (int)len, &ext);
     }
 
     printf("%s:size=%.0f ", name, fontsize);
