@@ -6,37 +6,71 @@
 #include <stdio.h>
 #include <string.h>
 
+XftFont *Load(Display *dpy, char *name, double size) {
+  return XftFontOpen(
+        dpy, 0,
+        XFT_FAMILY, XftTypeString, name,
+        XFT_SIZE, XftTypeDouble, size,
+        NULL
+        );
+}
+
 int main(int argc, char** argv)
 {
-        if (argc < 3)
-        {
-                printf("xftwidth font string\n");
-                return 1;
-        }
+  if (argc < 3)
+  {
+    printf("xftwidth font string [maxwidth]\n");
+    return 1;
+  }
 
-        char *name = argv[1];
-        size_t len = strlen(argv[2]);
+  char *name = argv[1];
+  size_t name_len = strlen(name);
+  size_t len = strlen(argv[2]);
+  int maxwidth = 0;
+  double fontsize = 1.0;
+  double sizeincr = 1.0;
 
-        Display *dpy;
-        XftFont *fn;
-        XGlyphInfo ext;
-        FcChar8 str[len]; 
+  Display *dpy;
+  XftFont *fn;
+  XGlyphInfo ext;
+  FcChar8 str[len]; 
 
-        memcpy(str, argv[2], len);
+  memcpy(str, argv[2], len);
+  dpy = XOpenDisplay(NULL);
 
-        dpy = XOpenDisplay(NULL);
-        fn = XftFontOpenName(dpy, 0, name);
+  if (argc > 3) {
+    sscanf(argv[3], "%d", &maxwidth);
 
-        if (fn == NULL)
-        {
-                puts("Font not found.");
-                return 1;
-        }
+    if (maxwidth <= 0) {
+      puts("maxwidth must be > 0.");
+      return 1;
+    }
 
-        XftTextExtents8(dpy, fn, str, (int)len, &ext);
-        printf("%d\n", ext.width);
+    fn = Load(dpy, name, fontsize);
+  } else {
+    fn = XftFontOpenName(dpy, 0, name);
+  }
 
-        XCloseDisplay(dpy);
+  if (fn == NULL)
+  {
+    puts("Font not found.");
+    return 1;
+  }
 
-        return 0;
+  XftTextExtents8(dpy, fn, str, (int)len, &ext);
+
+  if (maxwidth > 0) {
+    while (ext.width < maxwidth) {
+      fontsize += sizeincr;
+      fn = Load(dpy, name, fontsize);
+      XftTextExtents8(dpy, fn, str, (int)len, &ext);
+    }
+
+    printf("%s:size=%.0f ", name, fontsize);
+  }
+
+  printf("%d\n", ext.width);
+  XCloseDisplay(dpy);
+
+  return 0;
 }
