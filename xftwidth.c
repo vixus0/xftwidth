@@ -33,7 +33,7 @@ int main(int argc, char** argv)
   Display *dpy;
   XftFont *fn;
   XGlyphInfo ext;
-  FcChar8 str[len]; 
+  FcChar8 str[len];
 
   memcpy(str, argv[2], len);
   dpy = XOpenDisplay(NULL);
@@ -70,6 +70,7 @@ int main(int argc, char** argv)
   }
 
   printf("%d\n", ext.width);
+  XftFontClose(dpy, fn);
   XCloseDisplay(dpy);
 
   return 0;
